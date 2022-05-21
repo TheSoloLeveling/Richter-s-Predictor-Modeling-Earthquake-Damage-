@@ -1,3 +1,5 @@
+import time
+
 import pandas as pd
 import numpy as np
 import seaborn as sns
@@ -12,7 +14,7 @@ from sklearn.model_selection import cross_validate,KFold, RandomizedSearchCV
 from sklearn.model_selection import train_test_split
 
 from sklearn.utils import resample
-
+from sklearn.preprocessing import LabelEncoder
 from xgboost import XGBClassifier
 
 # Pre set values for max cols and chart size
@@ -37,7 +39,10 @@ data['damage'].value_counts()
 
 # Define X and y variables
 X=pd.get_dummies(data.loc[:,:'has_secondary_use_other'])
+le = LabelEncoder()
+
 y=data['damage'].astype(int)
+#y= le.fit_transform(y) for python 3.10
 
 # Parameters for XGboost
 n_jobs=[-1]
@@ -54,11 +59,11 @@ param_grid={'n_jobs':n_jobs,
 
 # Fit scaled traing data on XGboost Classifier- This step took 17 hours to complete
 clf=XGBClassifier()
-
 kf=KFold(n_splits=2,shuffle=True)
-
 rs=RandomizedSearchCV(clf,param_distributions=param_grid,cv=kf,scoring='f1_micro')
+start_time = time.time()
+rs.fit(X,y )
+print('time :', time.time() - start_time)
 
-rs.fit(X,y)
 
 
