@@ -61,9 +61,8 @@ param_grid={'n_jobs':n_jobs,
 clf=XGBClassifier()
 kf=KFold(n_splits=2,shuffle=True)
 rs=RandomizedSearchCV(clf,param_distributions=param_grid,cv=kf,scoring='f1_micro')
-start_time = time.time()
 rs.fit(X,y )
-print('time :', time.time() - start_time)
+
 
 
 
